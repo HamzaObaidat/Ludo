@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Button moveButton;
     [SerializeField] private Image diceImage;
     [SerializeField] private Image chipImage;
+    [SerializeField] private Image winImage;
     [SerializeField] private Transform[] boardPositions; // Array of positions representing the Ludo board
 
     private int homeIndex;  // Index of the starting position (chip's home)
@@ -29,6 +30,7 @@ public class GameManager : MonoBehaviour
     private Animator animator;
 
 
+    
     private void Start()
     {
         canRoll = true;
@@ -45,6 +47,7 @@ public class GameManager : MonoBehaviour
         // Define home and goal positions based on the board array
         homeIndex = 0;
         goalIndex = boardPositions.Length - 1;
+
     }
 
 
@@ -57,6 +60,10 @@ public class GameManager : MonoBehaviour
 
         // Load chip sprite
         Addressables.LoadAssetAsync<Sprite>("ChipSprite").Completed += OnChipSpriteLoaded;
+
+        // Load win sprite
+        Addressables.LoadAssetAsync<Sprite>("WinEffect").Completed += OnWinSpriteLoaded;
+
     }
 
     // Callback for when the dice spritesheet is successfully loaded
@@ -70,6 +77,19 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.LogError("Failed to load DiceSpriteSheet");
+        }
+    }
+
+    // Callback for when the win sprite is successfully loaded
+    private void OnWinSpriteLoaded(AsyncOperationHandle<Sprite> handle)
+    {
+        if (handle.Status == AsyncOperationStatus.Succeeded)
+        {
+            winImage.sprite = handle.Result; // Assign the loaded sprite to the chip
+        }
+        else
+        {
+            Debug.LogError("Failed to load ChipSprite");
         }
     }
 
@@ -232,6 +252,7 @@ public class GameManager : MonoBehaviour
         {
             AudioManager.Instance.Play("GameOver"); // Play game over sound
             Debug.LogError("Game Over");
+            WinEffect();
             SetButtonsInteractable(false, false, true); // Enable only the Reset button
         }
         else
@@ -245,6 +266,7 @@ public class GameManager : MonoBehaviour
     // Handle resetting the chip to the start position when Reset button is clicked
     private void ResetChip()
     {
+        winImage.transform.localScale = Vector3.zero;
         currentPosition = 0; // Reset chip position
         chipImage.transform.position = boardPositions[0].position; // Move chip back to the start position
         lastRollResult = 0; // Reset last roll result
@@ -255,6 +277,25 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    public void WinEffect()
+    {
+        winImage.transform.DOScale(1.5f, .5f)
+           .OnComplete(() =>
+           {
+               // Scale back down
+               winImage.transform.DOScale(1f, .5f)
+                   .OnComplete(() =>
+                   {
+                       // Move the sprite
+                       winImage.transform.DOMove(winImage.transform.position + new Vector3(0, 1, 0), 1f)
+                           .OnComplete(() =>
+                           {
+                               // Reset position after moving
+                               winImage.transform.DOMove(winImage.transform.position - new Vector3(0, 1, 0), 1f);
+                           });
+                   });
+           });
+    }
 
     // Set the interactable states of the buttons
     private void SetButtonsInteractable(bool roll, bool move, bool reset)
@@ -267,15 +308,8 @@ public class GameManager : MonoBehaviour
     // Clean up addressable assets when the game object is destroyed
     private void OnDestroy()
     {
-        if (diceSprites != null) // Release each loaded dice face sprite
-        {
-            foreach (var sprite in diceSprites)
-            {
-                Addressables.Release(sprite);
-            }
-        }
-
         Addressables.Release(chipImage.sprite); // Release the loaded chip sprite
+        Addressables.Release(winImage.sprite); // Release the loaded chip sprite
         Debug.Log("Released addressable assets");
     }
 }

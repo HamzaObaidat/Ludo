@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5834b5087d578d24c926ce20cd31e6d6, type: 3}
-  m_Name: DiceAnimationSheet_ContentUpdateGroupSchema
+  m_Name: WinEffect_ContentUpdateGroupSchema
   m_EditorClassIdentifier: 
-  m_Group: {fileID: 11400000, guid: fa2a1d2fbd67f634db3f28f0974f97b7, type: 2}
+  m_Group: {fileID: 11400000, guid: 1c4e0541ed8c6a9458f73424482249a1, type: 2}
   m_StaticContent: 0
