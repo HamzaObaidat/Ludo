@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: DiceAnimationSheet
+  m_EditorClassIdentifier: 
+  m_GroupName: DiceAnimationSheet
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 86bc20c67c9842e479c35d05ba287e48
+  m_SerializeEntries:
+  - m_GUID: 62d108ae1f68b5a4e80c4243166eae65
+    m_Address: Assets/Sprites/DiceAnimationSheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DiceAnimationSheet
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 75631d8e54d00f1489fce297845a97ec, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 53d44ef3b422c8d4889b6cb767282017, type: 2}
+    - {fileID: 11400000, guid: 0fbaa14fb47586f4b959a7aa85869db0, type: 2}

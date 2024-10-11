@@ -1,0 +1,55 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Networking;
+
+public class ApiManager : MonoBehaviour
+{
+    private const string RANDOM_API_URL = "https://www.random.org/integers/?num=1&min=1&max=6&col=1&base=10&format=plain&rnd=new";
+
+
+    public static ApiManager instance;
+
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
+
+    public IEnumerator GetRandomNumber(Action<int> callback)
+    {
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(RANDOM_API_URL))
+        {
+            webRequest.SetRequestHeader("User-Agent", "UnityWebRequest");
+
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.result == UnityWebRequest.Result.Success)
+            {
+                if (int.TryParse(webRequest.downloadHandler.text.Trim(), out int result))
+                {
+                    callback(result);
+                }
+                else
+                {
+                    Debug.LogError("Failed to parse random number");
+                    callback(0);
+                }
+            }
+            else
+            {
+                Debug.LogError("Error fetching random number: " + webRequest.error);
+                callback(0);
+            }
+        }
+
+    }
+}

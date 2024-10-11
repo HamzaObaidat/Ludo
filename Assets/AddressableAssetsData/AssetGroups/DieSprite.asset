@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: DieSprite
+  m_EditorClassIdentifier: 
+  m_GroupName: DieSprite
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 181010e201e60fd46bd8ae4fdb3262e8
+  m_SerializeEntries:
+  - m_GUID: 2cb680dd66dbfad4ab33a1cce8671fc2
+    m_Address: Assets/Sprites/diceValues.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - DieFace
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 75631d8e54d00f1489fce297845a97ec, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 01b8de5bd8bcd6c4facbbf9a027b55c2, type: 2}
+    - {fileID: 11400000, guid: d1c702ede702951428fe25bd90d4c671, type: 2}
