@@ -241,8 +241,8 @@ public class GameManager : MonoBehaviour
         for (int i = currentPosition + 1; i <= targetPosition; i++)
         {
             AudioManager.Instance.PlayWithCooldown("ChipMove", 0.1f); // Play chip movement sound with cooldown
-            chipImage.transform.DOMove(boardPositions[i].position, 0.5f).SetEase(Ease.Linear); // Animate chip movement
-            yield return new WaitForSeconds(0.6f); // Wait before moving to the next position
+            chipImage.transform.DOMove(boardPositions[i].position, 0.2f).SetEase(Ease.Linear); // Animate chip movement
+            yield return new WaitForSeconds(0.3f); // Wait before moving to the next position
         }
 
         currentPosition = targetPosition; // Update the chip's current position
