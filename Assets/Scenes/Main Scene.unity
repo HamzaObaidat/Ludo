@@ -365,8 +365,6 @@ MonoBehaviour:
   - {fileID: 1620904387}
   - {fileID: 1508538660}
   - {fileID: 409854559}
-  homeIndex: 0
-  goalIndex: 0
 --- !u!4 &83906386
 Transform:
   m_ObjectHideFlags: 0
@@ -395,7 +393,7 @@ GameObject:
   - component: {fileID: 94194170}
   - component: {fileID: 94194172}
   m_Layer: 5
-  m_Name: chip Image
+  m_Name: chip_Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1022,8 +1020,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 140.1
-  m_fontSizeBase: 140.1
+  m_fontSize: 126
+  m_fontSizeBase: 126
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -1812,7 +1810,7 @@ GameObject:
   - component: {fileID: 455604093}
   - component: {fileID: 455604094}
   m_Layer: 5
-  m_Name: dice Image
+  m_Name: dice_Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1887,7 +1885,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 408a431e8bd829d48bc19718f1e21fb4, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -2794,7 +2792,7 @@ GameObject:
   - component: {fileID: 793135627}
   - component: {fileID: 793135626}
   m_Layer: 5
-  m_Name: Board
+  m_Name: Board_Img
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4804,8 +4802,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 126.2
-  m_fontSizeBase: 126.2
+  m_fontSize: 126
+  m_fontSizeBase: 126
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -5218,41 +5216,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1458249291}
   m_CullTransparentMesh: 1
---- !u!1 &1476395382
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1476395383}
-  m_Layer: 5
-  m_Name: Chips
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1476395383
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1476395382}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1883703611}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1508538659
 GameObject:
   m_ObjectHideFlags: 0
@@ -5837,7 +5800,6 @@ RectTransform:
   m_Children:
   - {fileID: 793135625}
   - {fileID: 2116126137}
-  - {fileID: 1476395383}
   - {fileID: 1371046132}
   - {fileID: 455604091}
   - {fileID: 94194169}
@@ -6346,7 +6308,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2116126137}
   m_Layer: 0
-  m_Name: Board Positions
+  m_Name: Board_Positions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
