@@ -34,6 +34,7 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
+        // Initialize each sound in the array by adding an AudioSource to the GameObject
         foreach (Sound s in sounds)
         {
             s.source = gameObject.AddComponent<AudioSource>();
@@ -42,6 +43,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    // Method to play a sound by name
     public void Play(string name)
     {
         Sound s = System.Array.Find(sounds, sound => sound.name == name);
@@ -53,7 +55,8 @@ public class AudioManager : MonoBehaviour
         s.source.Play();
     }
 
-   
+
+    // Method to play a sound with a cooldown to prevent it from being played too frequently
     public void PlayWithCooldown(string name, float cooldown)
     {
         if (!soundTimers.ContainsKey(name) || Time.time - soundTimers[name] >= cooldown)

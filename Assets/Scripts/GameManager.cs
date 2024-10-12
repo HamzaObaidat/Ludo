@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using System.Collections;
-using System;
 using DG.Tweening;
 
 public class GameManager : MonoBehaviour
@@ -14,7 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Image diceImage;
     [SerializeField] private Image chipImage;
     [SerializeField] private GameObject winEffect;
-    [SerializeField] private Transform[] boardPositions; // Array of positions representing the Ludo board
+    [SerializeField] private Transform[] boardPositions;
 
 
     private int homeIndex;  // Index of the starting position (chip's home)
@@ -22,7 +21,6 @@ public class GameManager : MonoBehaviour
 
     private bool canRoll;  // Controls whether the dice can be rolled
     private bool canMove;  // Controls whether the chip can move
-    private bool gameOver; // Game over state (not currently used)
 
     private int lastRollResult = 0;  // Stores the last dice roll result
     private int currentPosition = 0; // Keeps track of the chip's current position on the board
@@ -70,7 +68,7 @@ public class GameManager : MonoBehaviour
         if (handle.Status == AsyncOperationStatus.Succeeded)
         {
             Sprite spriteSheet = handle.Result;
-            diceSprites = SplitSpriteSheet(spriteSheet, 6); // Assuming the spritesheet contains 6 faces of a dice
+            diceSprites = SplitSpriteSheet(spriteSheet, 6); 
         }
         else
         {
@@ -84,7 +82,7 @@ public class GameManager : MonoBehaviour
     {
         if (handle.Status == AsyncOperationStatus.Succeeded)
         {
-            chipImage.sprite = handle.Result; // Assign the loaded sprite to the chip
+            chipImage.sprite = handle.Result; 
         }
         else
         {
@@ -95,9 +93,9 @@ public class GameManager : MonoBehaviour
     // Split the loaded dice spritesheet into individual dice face sprites
     private Sprite[] SplitSpriteSheet(Sprite spriteSheet, int spriteCount)
     {
-        Sprite[] sprites = new Sprite[spriteCount]; // Create an array to hold individual dice faces
-        float spriteWidth = spriteSheet.texture.width / spriteCount; // Calculate width of each sprite
-        float spriteHeight = spriteSheet.texture.height; // Use the full height of the sprite sheet
+        Sprite[] sprites = new Sprite[spriteCount];
+        float spriteWidth = spriteSheet.texture.width / spriteCount;
+        float spriteHeight = spriteSheet.texture.height; 
 
         // Loop through the spritesheet and extract individual dice faces
         for (int i = 0; i < spriteCount; i++)
@@ -115,9 +113,9 @@ public class GameManager : MonoBehaviour
     // Handles dice rolling when Roll button is clicked
     private void RollDice()
     {
-        if (canRoll) // Ensure rolling is allowed
+        if (canRoll) 
         {
-            SetButtonsInteractable(false, false, false); // Disable all buttons during the dice roll
+            SetButtonsInteractable(false, false, false);
             StartCoroutine(RollDiceAnimation());
         }
     }
@@ -130,7 +128,7 @@ public class GameManager : MonoBehaviour
         animator.enabled = true;
         animator.SetTrigger("Roll");
 
-        yield return new WaitForSeconds(.5f);  // Adjust timing as needed
+        yield return new WaitForSeconds(.5f);
 
         animator.enabled = false;
         yield return StartCoroutine(GetRandomNumber());
@@ -145,47 +143,47 @@ public class GameManager : MonoBehaviour
     // Callback for when a random number (dice roll result) is received from the API
     private void OnRandomNumberReceived(int result)
     {
-        lastRollResult = result; // Store the roll result
+        lastRollResult = result;
         Debug.Log($"Dice roll result: {lastRollResult}");
 
         if (lastRollResult >= 1 && lastRollResult <= diceSprites.Length)
         {
             // Update the dice face to the corresponding sprite based on the roll result
-            animator.SetBool("isRoll", false); // Stop the roll animation
-            animator.enabled = false; // Disable the animator after rolling
+            animator.SetBool("isRoll", false); 
+            animator.enabled = false; 
             diceImage.sprite = diceSprites[lastRollResult - 1]; // Update dice image to show rolled number
 
 
             // Handle game logic when the chip is at home
             if (currentPosition == homeIndex)
             {
-                if (lastRollResult != 6) // If the result isn't 6, the chip can't move out of home
+                if (lastRollResult != 6)
                 {
-                    AudioManager.Instance.Play("Warning"); // Play warning sound
-                    canRoll = true; // Allow another roll
-                    canMove = false; // Disable chip movement
-                    SetButtonsInteractable(true, false, true); // Enable Roll and Reset buttons
+                    AudioManager.Instance.Play("Warning"); 
+                    canRoll = true; 
+                    canMove = false; 
+                    SetButtonsInteractable(true, false, true); 
                 }
                 else
                 {
                     canMove = true; // Chip can move if 6 is rolled
-                    SetButtonsInteractable(false, true, true); // Enable Roll and Reset buttons
+                    SetButtonsInteractable(false, true, true); 
 
                 }
             }
             // Prevent movement if the dice roll would exceed the goal
             else if (currentPosition + lastRollResult > goalIndex)
             {
-                AudioManager.Instance.Play("Warning"); // Play warning sound
+                AudioManager.Instance.Play("Warning");
                 Debug.Log("Need to roll again.");
-                canRoll = true; // Allow another roll
-                canMove = false; // Disable chip movement
-                SetButtonsInteractable(true, false, true); // Enable Roll and Reset buttons
+                canRoll = true;
+                canMove = false;
+                SetButtonsInteractable(true, false, true); 
             }
             else
             {
-                SetButtonsInteractable(false, true, true); // Enable Move button
-                canMove = true; // Chip can move normally
+                SetButtonsInteractable(false, true, true); 
+                canMove = true;
             }
         }
         else
@@ -193,79 +191,25 @@ public class GameManager : MonoBehaviour
             Debug.LogError($"Invalid roll result: {lastRollResult}. Expected 1-{diceSprites.Length}");
         }
     }
-
     #endregion
 
-    /*    #region Handle Chip
-        // Handle chip movement when Move button is clicked
-        private void MoveChip()
-        {
-            if (lastRollResult > 0 && canMove) // Ensure movement is allowed
-            {
-                SetButtonsInteractable(false, false, false); // Disable all buttons during chip movement
-
-                // Handle special case where chip leaves home after rolling a 6
-                if (currentPosition == homeIndex && lastRollResult == 6)
-                {
-                    StartCoroutine(MoveChipStepByStep(1)); // Move chip out of home
-                    Debug.Log("Chip exited home and moved to start point.");
-                }
-                else
-                {
-                    StartCoroutine(MoveChipStepByStep(lastRollResult)); // Move chip based on dice roll
-                }
-            }
-        }
-
-        // Coroutine to move the chip step by step
-        private IEnumerator MoveChipStepByStep(int steps)
-        {
-            canMove = false; // Disable further movement during animation
-            int targetPosition = currentPosition + steps; // Calculate target position
-
-            // Move the chip to each board position step by step
-            for (int i = currentPosition + 1; i <= targetPosition; i++)
-            {
-                AudioManager.Instance.PlayWithCooldown("ChipMove", 0.1f); // Play chip movement sound with cooldown
-                chipImage.transform.DOMove(boardPositions[i].position, 0.2f).SetEase(Ease.Linear); // Animate chip movement
-                yield return new WaitForSeconds(0.3f); // Wait before moving to the next position
-            }
-
-            currentPosition = targetPosition; // Update the chip's current position
-
-            // Check if the chip has reached the goal
-            if (currentPosition == goalIndex)
-            {
-                AudioManager.Instance.Play("GameOver"); // Play game over sound
-                Debug.LogError("Game Over");
-                WinEffect();
-                SetButtonsInteractable(false, false, true); // Enable only the Reset button
-            }
-            else
-            {
-                canRoll = true; // Allow dice rolling after movement
-                diceImage.gameObject.SetActive(false); // Hide dice image
-                SetButtonsInteractable(true, false, true); // Enable Roll and Reset buttons
-            }
-        }
-    */
     #region Handle Chip
     // Handle chip movement when Move button is clicked
     private void MoveChip()
     {
-        if (lastRollResult > 0 && canMove) // Ensure movement is allowed
+        if (lastRollResult > 0 && canMove)
         {
-            SetButtonsInteractable(false, false, false); // Disable all buttons during chip movement
+            SetButtonsInteractable(false, false, false); 
 
             // Handle special case where chip leaves home after rolling a 6
             if (currentPosition == homeIndex && lastRollResult == 6)
             {
-                StartCoroutine(MoveChipStepByStep(1)); // Move chip out of home
+                StartCoroutine(MoveChipStepByStep(1));
                 Debug.Log("Chip exited home and moved to start point.");
             }
             else
             {
-                StartCoroutine(MoveChipStepByStep(lastRollResult)); // Move chip based on dice roll
+                StartCoroutine(MoveChipStepByStep(lastRollResult)); 
             }
         }
     }
@@ -273,13 +217,13 @@ public class GameManager : MonoBehaviour
     // Coroutine to move the chip step by step
     private IEnumerator MoveChipStepByStep(int steps)
     {
-        canMove = false; // Disable further movement during animation
+        canMove = false; 
         int targetPosition = currentPosition + steps; // Calculate target position
 
         // Move the chip to each board position step by step
         for (int i = currentPosition + 1; i <= targetPosition; i++)
         {
-            AudioManager.Instance.PlayWithCooldown("ChipMove", 0.1f); // Play chip movement sound with cooldown
+            AudioManager.Instance.PlayWithCooldown("ChipMove", 0.1f);
 
             // Animate chip movement with ease and duration customization
             chipImage.transform.DOMove(boardPositions[i].position, 0.3f)
@@ -290,21 +234,21 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(0.25f); // Reduce delay for smoother flow
         }
 
-        currentPosition = targetPosition; // Update the chip's current position
+        currentPosition = targetPosition; 
 
         // Check if the chip has reached the goal
         if (currentPosition == goalIndex)
         {
-            AudioManager.Instance.Play("GameOver"); // Play game over sound
+            AudioManager.Instance.Play("GameOver"); 
             Debug.LogError("Game Over");
             winEffect.SetActive(true);
-            SetButtonsInteractable(false, false, true); // Enable only the Reset button
+            SetButtonsInteractable(false, false, true);
         }
         else
         {
-            canRoll = true; // Allow dice rolling after movement
-            diceImage.gameObject.SetActive(false); // Hide dice image
-            SetButtonsInteractable(true, false, true); // Enable Roll and Reset buttons
+            canRoll = true; 
+            diceImage.gameObject.SetActive(false); 
+            SetButtonsInteractable(true, false, true);
         }
     }
 
@@ -314,11 +258,11 @@ public class GameManager : MonoBehaviour
         winEffect.SetActive(false);
 
         currentPosition = 0; // Reset chip position
-        chipImage.transform.position = boardPositions[0].position; // Move chip back to the start position
+        chipImage.transform.position = boardPositions[0].position; 
         lastRollResult = 0; // Reset last roll result
-        canRoll = true; // Allow rolling again
-        diceImage.gameObject.SetActive(false); // Hide dice image
-        SetButtonsInteractable(true, false, true); // Enable Roll and Reset buttons
+        canRoll = true; 
+        diceImage.gameObject.SetActive(false); 
+        SetButtonsInteractable(true, false, true); 
         Debug.Log("Reset chip position");
     }
     #endregion
@@ -336,7 +280,6 @@ public class GameManager : MonoBehaviour
     private void OnDestroy()
     {
         Addressables.Release(chipImage.sprite); // Release the loaded chip sprite
-        //Addressables.Release(winImage.sprite); // Release the loaded chip sprite
         Debug.Log("Released addressable assets");
     }
 }
