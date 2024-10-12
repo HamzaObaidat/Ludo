@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 7aefa6694573ae9488866b5de68d88db
   m_currentHash:
     serializedVersion: 2
-    Hash: 00000000000000000000000000000000
+    Hash: 48a6699d974ca83f3c76c2e12e0eb549
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -48,7 +48,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 91c89d731a617334f932b3b68a502541, type: 2}
   - {fileID: 11400000, guid: ceee5c1dc83efe1499f5a3bdaf69beb9, type: 2}
   - {fileID: 11400000, guid: 1967c3b353772ac4cb9abee1c3243e0d, type: 2}
-  - {fileID: 11400000, guid: 1c4e0541ed8c6a9458f73424482249a1, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -92,8 +91,6 @@ MonoBehaviour:
     - default
     - ChipSprite
     - DieFace
-    - DiceAnimationSheet
-    - WinEffect
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: ee104071178b7a24a8fc4472745fe97e, type: 2}

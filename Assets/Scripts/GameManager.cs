@@ -13,8 +13,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Button moveButton;
     [SerializeField] private Image diceImage;
     [SerializeField] private Image chipImage;
-    [SerializeField] private Image winImage;
+    [SerializeField] private GameObject winEffect;
     [SerializeField] private Transform[] boardPositions; // Array of positions representing the Ludo board
+
 
     private int homeIndex;  // Index of the starting position (chip's home)
     private int goalIndex;  // Index of the final goal position
@@ -61,9 +62,6 @@ public class GameManager : MonoBehaviour
         // Load chip sprite
         Addressables.LoadAssetAsync<Sprite>("ChipSprite").Completed += OnChipSpriteLoaded;
 
-        // Load win sprite
-        Addressables.LoadAssetAsync<Sprite>("WinEffect").Completed += OnWinSpriteLoaded;
-
     }
 
     // Callback for when the dice spritesheet is successfully loaded
@@ -80,18 +78,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Callback for when the win sprite is successfully loaded
-    private void OnWinSpriteLoaded(AsyncOperationHandle<Sprite> handle)
-    {
-        if (handle.Status == AsyncOperationStatus.Succeeded)
-        {
-            winImage.sprite = handle.Result; // Assign the loaded sprite to the chip
-        }
-        else
-        {
-            Debug.LogError("Failed to load ChipSprite");
-        }
-    }
 
     // Callback for when the chip sprite is successfully loaded
     private void OnChipSpriteLoaded(AsyncOperationHandle<Sprite> handle)
@@ -210,6 +196,59 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
+    /*    #region Handle Chip
+        // Handle chip movement when Move button is clicked
+        private void MoveChip()
+        {
+            if (lastRollResult > 0 && canMove) // Ensure movement is allowed
+            {
+                SetButtonsInteractable(false, false, false); // Disable all buttons during chip movement
+
+                // Handle special case where chip leaves home after rolling a 6
+                if (currentPosition == homeIndex && lastRollResult == 6)
+                {
+                    StartCoroutine(MoveChipStepByStep(1)); // Move chip out of home
+                    Debug.Log("Chip exited home and moved to start point.");
+                }
+                else
+                {
+                    StartCoroutine(MoveChipStepByStep(lastRollResult)); // Move chip based on dice roll
+                }
+            }
+        }
+
+        // Coroutine to move the chip step by step
+        private IEnumerator MoveChipStepByStep(int steps)
+        {
+            canMove = false; // Disable further movement during animation
+            int targetPosition = currentPosition + steps; // Calculate target position
+
+            // Move the chip to each board position step by step
+            for (int i = currentPosition + 1; i <= targetPosition; i++)
+            {
+                AudioManager.Instance.PlayWithCooldown("ChipMove", 0.1f); // Play chip movement sound with cooldown
+                chipImage.transform.DOMove(boardPositions[i].position, 0.2f).SetEase(Ease.Linear); // Animate chip movement
+                yield return new WaitForSeconds(0.3f); // Wait before moving to the next position
+            }
+
+            currentPosition = targetPosition; // Update the chip's current position
+
+            // Check if the chip has reached the goal
+            if (currentPosition == goalIndex)
+            {
+                AudioManager.Instance.Play("GameOver"); // Play game over sound
+                Debug.LogError("Game Over");
+                WinEffect();
+                SetButtonsInteractable(false, false, true); // Enable only the Reset button
+            }
+            else
+            {
+                canRoll = true; // Allow dice rolling after movement
+                diceImage.gameObject.SetActive(false); // Hide dice image
+                SetButtonsInteractable(true, false, true); // Enable Roll and Reset buttons
+            }
+        }
+    */
     #region Handle Chip
     // Handle chip movement when Move button is clicked
     private void MoveChip()
@@ -241,8 +280,14 @@ public class GameManager : MonoBehaviour
         for (int i = currentPosition + 1; i <= targetPosition; i++)
         {
             AudioManager.Instance.PlayWithCooldown("ChipMove", 0.1f); // Play chip movement sound with cooldown
-            chipImage.transform.DOMove(boardPositions[i].position, 0.2f).SetEase(Ease.Linear); // Animate chip movement
-            yield return new WaitForSeconds(0.3f); // Wait before moving to the next position
+
+            // Animate chip movement with ease and duration customization
+            chipImage.transform.DOMove(boardPositions[i].position, 0.3f)
+                .SetEase(Ease.InOutQuad) // Smoother easing for movement
+                .OnComplete(() => Debug.Log("Movement to position " + i + " complete.")); // Callback when movement finishes
+
+            // Wait a bit before moving to the next position
+            yield return new WaitForSeconds(0.25f); // Reduce delay for smoother flow
         }
 
         currentPosition = targetPosition; // Update the chip's current position
@@ -252,7 +297,7 @@ public class GameManager : MonoBehaviour
         {
             AudioManager.Instance.Play("GameOver"); // Play game over sound
             Debug.LogError("Game Over");
-            WinEffect();
+            winEffect.SetActive(true);
             SetButtonsInteractable(false, false, true); // Enable only the Reset button
         }
         else
@@ -266,7 +311,8 @@ public class GameManager : MonoBehaviour
     // Handle resetting the chip to the start position when Reset button is clicked
     private void ResetChip()
     {
-        winImage.transform.localScale = Vector3.zero;
+        winEffect.SetActive(false);
+
         currentPosition = 0; // Reset chip position
         chipImage.transform.position = boardPositions[0].position; // Move chip back to the start position
         lastRollResult = 0; // Reset last roll result
@@ -277,25 +323,6 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    public void WinEffect()
-    {
-        winImage.transform.DOScale(1.5f, .5f)
-           .OnComplete(() =>
-           {
-               // Scale back down
-               winImage.transform.DOScale(1f, .5f)
-                   .OnComplete(() =>
-                   {
-                       // Move the sprite
-                       winImage.transform.DOMove(winImage.transform.position + new Vector3(0, 1, 0), 1f)
-                           .OnComplete(() =>
-                           {
-                               // Reset position after moving
-                               winImage.transform.DOMove(winImage.transform.position - new Vector3(0, 1, 0), 1f);
-                           });
-                   });
-           });
-    }
 
     // Set the interactable states of the buttons
     private void SetButtonsInteractable(bool roll, bool move, bool reset)
@@ -309,7 +336,7 @@ public class GameManager : MonoBehaviour
     private void OnDestroy()
     {
         Addressables.Release(chipImage.sprite); // Release the loaded chip sprite
-        Addressables.Release(winImage.sprite); // Release the loaded chip sprite
+        //Addressables.Release(winImage.sprite); // Release the loaded chip sprite
         Debug.Log("Released addressable assets");
     }
 }
