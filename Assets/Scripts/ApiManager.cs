@@ -15,7 +15,7 @@ public class ApiManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject); // return it in case of multiple scenes
         }
         else
         {
